@@ -1,32 +1,51 @@
 import turtle
 import random
+import time
+turtle.bgpic("final_background.gif")
+SIZE_X=600
+SIZE_Y=500
+turtle.setup(SIZE_X,SIZE_Y)
 turtle.hideturtle()
 bowl = turtle.clone()
+turtle.write("CATCHER IN THE RYEN", align = "center", font = ("arial", 35, "normal"))
+time.sleep(3)
+turtle.clear()
+turtle.write("How to play?" ,align = "center",font = ("airal", 25, "normal"))
+time.sleep(1.5)
+turtle.clear()
+turtle.write("Catch the blue waterdrops and avoid the black ones", align = "center", font = ("arial",17, "normal"))
+time.sleep(3)
+turtle.clear()
+turtle.write("and be careful from the edges", align = "center", font = ("arial", 17, "normal"))
+time.sleep(3)
+turtle.clear()
+turtle.write("GOOD LUCK!", align = "center", font = ("arial", 30, "normal"))
+time.sleep(1.5)
+turtle.clear()
 
-
-speed=5
+turtle.clear()
 y_cord = 250
 
 turtle.listen()
 
 turtle.tracer(1,0)
-SIZE_X=800
-SIZE_Y=500
-turtle.setup(SIZE_X,SIZE_Y)
-SQ=4
 
-RIGHT_EDGE=400
-LEFT_EDGE=-400
+SQ=10
+
+RIGHT_EDGE=280
+LEFT_EDGE=-280
 
 
-
+turtle.write("0",align = "center", font = 20)
 bowl=turtle.Turtle()
 bowl.penup()
-bowl.goto(0,-250)
+bowl.goto(0,-230)
 
-turtle.register_shape('bowl.gif')
+turtle.register_shape('final_bowl.gif')
+turtle.register_shape("final_drop.gif")
+turtle.register_shape('final_poison.gif')
 
-bowl.shape('bowl.gif')
+bowl.shape('final_bowl.gif')
 
 
 
@@ -47,8 +66,10 @@ def left ():
 bowl.direction='Left'
 turtle.onkeypress(right,'Right')
 turtle.onkeypress(left,'Left')
-turtle.listen()    
-
+turtle.listen()
+list = []
+for i in range(14, 200):
+    list.append(i/2)
 
 def move ():
     my_pos=bowl.pos()
@@ -63,41 +84,83 @@ def move ():
     new_x_pos=new_pos[0]
 
     if new_x_pos>=RIGHT_EDGE:
-        print('You hit the right edge !Game over!')
+        turtle.clear()
+        hide()
+        turtle.write("Your bowl just broke. All the water you collected have gone to waste!", align = "center", font = ("arial", 13, "normal"))
         quit()
     elif new_x_pos<=LEFT_EDGE:
-        print('You hit the left edge! Game over !')
+        turtle.clear()
+        hide()
+        turtle.write("Your bowl just broke. All the water you collected have gone to waste!", align = "center", font = ("arial", 13, "normal"))
         quit()
         
 rain = turtle.clone()
 
-def make_rain():
-    turtle.register_shape("rain.gif")
-    rain.shape("rain.gif")
-    rain.hideturtle()
-    x_cord = random.randint(-400, 400)
-    rain.penup()
-    rain.goto(x_cord, y_cord)
-    rain.showturtle()
-    move_rain()
+    
 def move_rain():
-    rain.goto(rain.xcor(),rain.ycor()-speed)
-    print(rain.pos())
-    print(bowl.pos())
+    rain.goto(rain.xcor(),rain.ycor()-list[0])
     if (rain.pos()[0] - bowl.pos()[0] < 12 and rain.pos()[0] - bowl.pos()[0] > -12) and (rain.pos()[1] - bowl.pos()[1] < 12 and rain.pos()[1] - bowl.pos()[1] > -12):
         rain.hideturtle()
-        x_cord = random.randint(-400, 400)
+        x_cord = random.randint(LEFT_EDGE, RIGHT_EDGE)
         y_cord = 250
         rain.goto(x_cord, y_cord)
-        rain.showturtle
+        rain.showturtle()
+        list.pop(0)
+        turtle.clear()
+        turtle.write(int((list[0]-7)*2), align = "center", font = 20)
+        
     if rain.ycor()<-250:
+        turtle.clear()
+        hide()
+        turtle.write("You just saved the lives of " + str(int((list[0]-7)*2)) + " of the 2300 people that die every day due to lack of water!", align = "center", font = ("arial", 11, "normal"))
         quit()
-    turtle.ontimer(move_rain,)
 
-make_rain()    
+    turtle.ontimer(move_rain,50)
 
-  	 
-   	 
-   	 
-   	 
+    
+    
+rain.shape("final_drop.gif")
+rain.hideturtle()
+x_cord = random.randint(LEFT_EDGE+20, RIGHT_EDGE-20)
+rain.penup()
+rain.goto(x_cord, y_cord)
+rain.showturtle()
+move_rain()
+
+y_poi = 250
+def hide():
+    rain.hideturtle()
+    bowl.hideturtle()
+    poison.hideturtle()
+
+poison = turtle.Turtle()
+
+def move_poison():
+    peoper = "people"
+    poison.goto(poison.xcor(),poison.ycor()-10)
+    if (poison.pos()[0] - bowl.pos()[0] < 12 and poison.pos()[0] - bowl.pos()[0] > -12) and (poison.pos()[1] - bowl.pos()[1] < 12 and poison.pos()[1] - bowl.pos()[1] > -12):
+        turtle.clear()
+        hide()
+        if int((list[0]-7)*2) == 1:
+            peoper = "person"
+        turtle.write(str(int((list[0]-7)*2))+ " " + peoper + " just died due to water poisoning!", align = "center", font = ("arial", 13, "normal"))
+        quit()
+    turtle.ontimer(move_poison,50)
+    if poison.ycor() < -250:
+        y_cord = 250
+        x_poi = random.randint(LEFT_EDGE+20, RIGHT_EDGE-20)
+        poison.hideturtle()
+
+        poison.goto(x_poi, y_poi)
+        poison.showturtle()
+    
+poison.shape("final_poison.gif")
+poison.hideturtle()
+x_cord = random.randint(LEFT_EDGE+20, RIGHT_EDGE-20)
+poison.penup()
+poison.goto(x_cord, y_cord)
+poison.showturtle()
+move_poison()
+
+       
 turtle.mainloop()
